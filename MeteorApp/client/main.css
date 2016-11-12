@@ -1,1 +1,8 @@
 /* CSS declarations go here */
+body {
+	font-family: 'Roboto', sans-serif;
+}
+
+input:focus {
+	outline: none;
+}

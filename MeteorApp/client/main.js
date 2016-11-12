@@ -1,22 +1,50 @@
-import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
+/*========================
+== Import from packages ==
+========================*/
+import React from "react";
+import { Meteor } from "meteor/meteor";
+import { render } from "react-dom";
+import { FlowRouter} from "meteor/kadira:flow-router";
+import { mount } from "react-mounter";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
-import './main.html';
+/*===============================
+== Import from home-made files ==
+===============================*/
+import styles from "../config/styles";
+import Form from "../imports/components/Form/Form";
+import LoggedOut from "../imports/layouts/LoggedOut";
+import Home from "../imports/routes/Home";
 
-Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
-  this.counter = new ReactiveVar(0);
-});
+/*==================================
+== Required codes for Material UI ==
+==================================*/
+injectTapEventPlugin();
 
-Template.hello.helpers({
-  counter() {
-    return Template.instance().counter.get();
-  },
-});
+/*========================
+== Start of application ==
+========================*/
 
-Template.hello.events({
-  'click button'(event, instance) {
-    // increment the counter when button is clicked
-    instance.counter.set(instance.counter.get() + 1);
-  },
+const HomeLayout = ({ layout, content }) => (
+	<div>
+		<MuiThemeProvider>
+			{ layout() }
+			<div style={ styles.layoutContent }>
+				<div style={ styles.content }>
+					{ content() }
+				</div>
+			</div>
+		</MuiThemeProvider>
+	</div>
+);
+
+FlowRouter.route("/", {
+	action: function(params, queryParams) {
+		mount(Home, {
+			layout: () => (<LoggedOut />),
+			content: () => (<Home />)
+		});
+	},
+	name: "home"
 });
